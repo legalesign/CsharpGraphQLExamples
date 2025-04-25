@@ -8,7 +8,7 @@
             "name": "My debug config",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/net9.0/ConsoleSend.dll",
+            "program": "${workspaceFolder}/bin/Debug/net9.0/CLIMyInfoExample.dll",
             "args": ["alex.weinle@legalesign.com", "@Testdemo123", "notused"]
         }
     ]

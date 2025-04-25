@@ -5,7 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>CLILegalesignExamples.CLILegalQLExample</StartupObject>
+    <StartupObject>CLILegalesignExamples.CLIUpdateRecipient</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

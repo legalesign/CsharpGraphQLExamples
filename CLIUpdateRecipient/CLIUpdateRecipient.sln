@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSend", "ConsoleSend.csproj", "{5CDE7FDC-2A69-DD3F-4FEE-4CB323E19B07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLIUpdateRecipient", "CLIUpdateRecipient.csproj", "{5CDE7FDC-2A69-DD3F-4FEE-4CB323E19B07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

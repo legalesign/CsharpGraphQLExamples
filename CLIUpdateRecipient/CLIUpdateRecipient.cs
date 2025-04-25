@@ -40,9 +40,6 @@ namespace CLILegalesignExamples
 
             Console.ReadLine(data); 
 
-            // Find a match for the recipient we've been asked to update
-            string oldEmail = args[3];
-
             var oldRecipient = Array.Find(data.document.recipients, element => element.email == args[3])
 
             if(CLIUpdateRecipient !=null) {
@@ -55,7 +52,6 @@ namespace CLILegalesignExamples
 
                 // Got one! Let's update it.
                 UpdateRecipientAsync( oldRecipient, newRecipient, token);
-  
 
             } else {
                 Console.WriteLine($"Unable to find recipient {args[3]} on document {args[2]}.")            
@@ -64,13 +60,6 @@ namespace CLILegalesignExamples
 
         static async Task UpdateRecipientAsync(var oldRecipient, var newRecipient, token)
         {
-            var graphQLVariables = new { recipientId: oldRecipient.id,
-              email: "bert@customer.xyz", 
-            expiryDate: "2026-10-10T00:00:00.000Z",
-            firstName: "Bert",
-            lastName: "Updatesmith"
-            };
-
             // Note we are using the variables parameter -- but you can code values into your query/mutation string
             // We also set it not to inform the previous recipient by email - you may want this option.
             var data = await GraphQLLegalesign.Query("""mutation ChangeRecipient(
@@ -90,7 +79,7 @@ namespace CLILegalesignExamples
                             lastName: $lastName
                         }
                 )
-            } """, graphQLVariables, token)
+            } """, newRecipient, token)
         }
     }
 
