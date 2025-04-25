@@ -19,7 +19,7 @@ namespace CLILegalesignExamples
 {
     // These classes are intentionally empty for the purpose of this example. They are simply marker classes for the purpose of demonstration, contain no properties, and serve no other purpose.
 
-    class CLILegalQLExample
+    class CLIUpdateRecipient
     {
         static async Task Main(string[] args)
         {
