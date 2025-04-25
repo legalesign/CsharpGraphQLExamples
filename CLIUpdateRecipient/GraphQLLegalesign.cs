@@ -1,24 +1,18 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+// Required for all examples
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 using Amazon.Runtime;
 using System.Threading.Tasks;
 
-/***
-* This is a simple demonstration for more about the Legalesign API contact support@legalesign.com
-* dotnet add package Amazon.Extensions.CognitoAuthentication --version 2.5.6
-*
-* Check out the walk through of this code at https://apidocs.legalesign.com 
-**/
-
 namespace CLILegalesignExamples
 {
-    class CLIUpdateRecipient
+    class GraphQLLegalesign
     {
-        static async Task Main(string[] args)
+        static async Task QueryAsync(var graphQLQuery, var graphQLVariables, token)
         {
             Console.WriteLine("Legalesign C# Command Line Sender");
             var httpClient = new HttpClient
@@ -26,22 +20,14 @@ namespace CLILegalesignExamples
                 BaseAddress = new Uri("https://graphql.uk.legalesign.com/graphql")
             };
 
-            // First we need a valid security token
-            string okes = await CLILegalQLExample.GetCredsAsync(args[0], args[1]);
-
             httpClient.DefaultRequestHeaders.Add("User-Agent", "LegalesignCLI");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", okes);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var queryObject = new
             {
-                query = @"query { 
-                user { 
-                email
-                firstName
-                lastName
-                }
-            }",
-                variables = new { }
+                query = graphQLQuery
+            },
+                variables = graphQLVariables
             };
 
             var request = new HttpRequestMessage
@@ -69,7 +55,7 @@ namespace CLILegalesignExamples
 
 
 
-        static async Task<string> GetCredsAsync(string username, string password)
+        public static async Task<string> GetCredsAsync(string username, string password)
         {
             // These are the general purpose pool and client id - if you have dedicated ones insert them here.
             var poolData = new
