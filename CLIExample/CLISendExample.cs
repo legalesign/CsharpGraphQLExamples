@@ -28,7 +28,7 @@ namespace CLILegalesignExample
             };
 
             // First we need a valid security token
-            string okes = await GetCredsAsync("api@legalesign.com", "p4ssw0rd");
+            string okes = await GetCredsAsync(args[0], args[1]);
 
             httpClient.DefaultRequestHeaders.Add("User-Agent", "LegalesignCLI");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", okes);
