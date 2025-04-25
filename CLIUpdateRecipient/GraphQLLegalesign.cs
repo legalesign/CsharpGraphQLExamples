@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-// Required for all examples
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
@@ -14,7 +13,6 @@ namespace CLILegalesignExamples
     {
         static async Task QueryAsync(var graphQLQuery, var graphQLVariables, token)
         {
-            Console.WriteLine("Legalesign C# Command Line Sender");
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://graphql.uk.legalesign.com/graphql")
@@ -46,11 +44,12 @@ namespace CLILegalesignExamples
                 if (responseString != null)
                 {
                     responseObj = JsonSerializer.Deserialize<dynamic>(responseString);
-                    Console.WriteLine(responseObj);
+                    return responseObj;
                 }
             }
 
-            Console.ReadLine();
+            return new { error: "Unable to retrieve data."}
+
         }
 
 
