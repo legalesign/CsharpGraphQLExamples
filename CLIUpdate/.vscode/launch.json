@@ -2,18 +2,14 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.4.0",
+    "version": "0.3.0",
     "configurations": [
         {
             "name": "My debug config",
             "type": "coreclr",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/net9.0/ConsoleSend.dll",
-            "args": ["alex.weinle@legalesign.com", 
-            "@Testdemo123", "ZG9jMWVmMjdkYWYtMGJlMS0xMWYwLWJiYjUtMDZlNDc2YTA3NTY5", "alex.weinle+1@legalesign.com",
-            "bert@customer.xyz", 
-            "Bert",
-            "Updatesmith"]
+            "args": ["alex.weinle@legalesign.com", "@Testdemo123", "notused"]
         }
     ]
 }

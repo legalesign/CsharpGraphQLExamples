@@ -20,75 +20,64 @@ namespace CLILegalesignExamples
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Legalesign C# Command Line Sender");
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://graphql.uk.legalesign.com/graphql")
-            };
+            Console.WriteLine("Legalesign C# Recipient");
 
             // First we need a valid security token
-            string okes = await CLILegalQLExample.GetCredsAsync(args[0], args[1]);
+            string token = await GraphQLLegalesign.GetCredsAsync(args[0], args[1]);
 
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "LegalesignCLI");
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", okes);
-
-            var queryObject = new
-            {
-                query = @"query { 
-                user { 
-                email
-                firstName
-                lastName
+            Console.WriteLine($"Fetching recipients for document {args[2]}.")
+            var data = await GraphQLLegalesign.Query(@"query getDoument($documentId:ID) {
+                document(id: $documentId) {
+                    id
+                    recipients {
+                        id
+                        email
+                        firstName
+                        lastName
+                    }
                 }
-            }",
-                variables = new { }
-            };
+                }", new { documentId: args[2] }, token)
 
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                Content = new StringContent(JsonSerializer.Serialize(queryObject), Encoding.UTF8, "application/json")
-            };
+            Console.ReadLine(data); 
 
-            dynamic responseObj;
+            // Find a match for the recipient we've been asked to update
+            string oldEmail = args[3];
 
-            using (var response = await httpClient.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
+            var oldRecipient = Array.Find(data.document.recipients, element => element.email == args[3])
 
-                var responseString = await response.Content.ReadAsStringAsync();
-                if (responseString != null)
-                {
-                    responseObj = JsonSerializer.Deserialize<dynamic>(responseString);
-                    Console.WriteLine(responseObj);
-                }
-            }
+            if(CLIUpdateRecipient !=null) {
+                const newRecipient = new { recipientId: oldRecipient.id,
+                    email: args[4], 
+                    expiryDate: "2026-10-10T00:00:00.000Z",
+                    firstName: args[5],
+                    lastName: args[6]
+                };
 
-            Console.ReadLine();
-        }
+                // Got one! Let's update it.
+                UpdateRecipientAsync( oldRecipient, newRecipient, token);
+  
 
+            } else {
+                Console.WriteLine($"Unable to find recipient {args[3]} on document {args[2]}.")            
+            } 
+        };
 
-
-        static async Task<string> GetCredsAsync(string username, string password)
+        static async Task UpdateRecipientAsync(var oldRecipient, var newRecipient, token)
         {
-            // These are the general purpose pool and client id - if you have dedicated ones insert them here.
-            var poolData = new
-            {
-                UserPoolId = "eu-west-2_NUPAjABy7",
-                ClientId = "38kn0eb9mf2409t6mci98eqdvt",
+            var graphQLVariables = new { recipientId: oldRecipient.id,
+              email: "bert@customer.xyz", 
+            expiryDate: "2026-10-10T00:00:00.000Z",
+            firstName: "Bert",
+            lastName: "Updatesmith"
             };
 
-            AmazonCognitoIdentityProviderClient provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials());
-            CognitoUserPool userPool = new CognitoUserPool(poolData.UserPoolId, poolData.ClientId, provider);
-            CognitoUser user = new CognitoUser(username, poolData.ClientId, userPool, provider);
-            InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest()
-            {
-                Password = password
-            };
-
-            AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(authRequest).ConfigureAwait(false);
-            return authResponse.AuthenticationResult.AccessToken;
-
+            // Note we are using the variables object -- but you can code values into your query/mutation string
+            var data = await GraphQLLegalesign.Query("""mutation ChangeRecipient($recipientId: ID!) {
+                updateRecipient(
+                    input: { recipientId: $recipientId, email: $email, emailPreviousIfReplaced: false, expiryDate: $expiryDate, firstName: $firstName, lastName: $lastName}
+                )
+            } """, graphQLVariables, token)
         }
     }
+
 }
