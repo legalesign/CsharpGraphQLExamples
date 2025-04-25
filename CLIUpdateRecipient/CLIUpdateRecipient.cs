@@ -71,10 +71,24 @@ namespace CLILegalesignExamples
             lastName: "Updatesmith"
             };
 
-            // Note we are using the variables object -- but you can code values into your query/mutation string
-            var data = await GraphQLLegalesign.Query("""mutation ChangeRecipient($recipientId: ID!) {
-                updateRecipient(
-                    input: { recipientId: $recipientId, email: $email, emailPreviousIfReplaced: false, expiryDate: $expiryDate, firstName: $firstName, lastName: $lastName}
+            // Note we are using the variables parameter -- but you can code values into your query/mutation string
+            // We also set it not to inform the previous recipient by email - you may want this option.
+            var data = await GraphQLLegalesign.Query("""mutation ChangeRecipient(
+                    $recipientId: ID!, 
+                    $email: String, 
+                    $expiryDate: AWSDateTime,
+                    $firstName: String,
+                    $lastName: String
+                ) {
+                    updateRecipient(
+                        input: { 
+                            recipientId: $recipientId, 
+                            email: $email, 
+                            emailPreviousIfReplaced: false, 
+                            expiryDate: $expiryDate, 
+                            firstName: $firstName, 
+                            lastName: $lastName
+                        }
                 )
             } """, graphQLVariables, token)
         }
