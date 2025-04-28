@@ -1,32 +1,21 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
+﻿using System.Text.Json.Nodes;
+using CLILegalesignExamples;
 using System.Text.Json;
-using Amazon.CognitoIdentity;
-using Amazon.CognitoIdentityProvider;
-using Amazon.Extensions.CognitoAuthentication;
-using Amazon.Runtime;
-using System.Threading.Tasks;
-
-/***
-* This is a simple demonstration for more about the Legalesign API contact support@legalesign.com
-* dotnet add package Amazon.Extensions.CognitoAuthentication --version 2.5.6
-*
-* Check out the walk through of this code at https://apidocs.legalesign.com 
-**/
 
 namespace CLILegalesignExamples
 {
+    // These classes are intentionally empty for the purpose of this example. They are simply marker classes for the purpose of demonstration, contain no properties, and serve no other purpose.
     class CLIUpdateRecipient
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Legalesign C# Recipient");
+            Console.WriteLine("Legalesign C# Update Recipient Tool");
 
             // First we need a valid security token
             string token = await GraphQLLegalesign.GetCredsAsync(args[0], args[1]);
 
-            Console.WriteLine($"Fetching recipients for document {args[2]}.")
-            var data = await GraphQLLegalesign.Query(@"query getDoument($documentId:ID) {
+            Console.WriteLine($"Fetching recipients for document {args[2]}.");
+            var data = await GraphQLLegalesign.QueryAsync(@"query getDocument($documentId:ID) {
                 document(id: $documentId) {
                     id
                     recipients {
@@ -36,51 +25,66 @@ namespace CLILegalesignExamples
                         lastName
                     }
                 }
-                }", new { documentId: args[2] }, token)
+                }", new { documentId = args[2] }, token);   
 
-            Console.ReadLine(data); 
+            Console.WriteLine(data);
 
-            var oldRecipient = Array.Find(data.document.recipients, element => element.email == args[3])
+            if (data == null) return;
+        
+            QLResponse? d = JsonSerializer.Deserialize<QLResponse>(data);
+            QLRecipient? oldRecipient = d.data.document.recipients.Find(r => r.email == args[3]);
 
-            if(CLIUpdateRecipient !=null) {
-                const newRecipient = new { recipientId: oldRecipient.id,
-                    email: args[4], 
-                    expiryDate: "2026-10-10T00:00:00.000Z",
-                    firstName: args[5],
-                    lastName: args[6]
+            if (oldRecipient != null)
+            {
+                dynamic newRecipient = new
+                {
+                    recipientId = oldRecipient.id,
+                    email = args[4],
+                    expiryDate = "2026-10-10T00:00:00.000Z",
+                    firstName = args[5],
+                    lastName = args[6]
                 };
 
                 // Got one! Let's update it.
-                UpdateRecipientAsync( oldRecipient, newRecipient, token);
+                await UpdateRecipientAsync(oldRecipient, newRecipient, token);
 
-            } else {
-                Console.WriteLine($"Unable to find recipient {args[3]} on document {args[2]}.")            
-            } 
-        };
+            }
+            else
+            {
+                Console.WriteLine($"Unable to find recipient {args[3]} on document {args[2]}.");
+            }
 
-        static async Task UpdateRecipientAsync(var oldRecipient, var newRecipient, token)
-        {
-            // Note we are using the variables parameter -- but you can code values into your query/mutation string
-            // We also set it not to inform the previous recipient by email - you may want this option.
-            var data = await GraphQLLegalesign.Query("""mutation ChangeRecipient(
-                    $recipientId: ID!, 
-                    $email: String, 
+            async Task UpdateRecipientAsync(dynamic oldRecipient, dynamic newRecipient, string token)
+            {
+                // Note we are using the variables parameter -- but you can code values into your query/mutation string
+                // We also set it not to inform the previous recipient by email - you may want this option.
+                var data = await GraphQLLegalesign.QueryAsync(@"mutation ChangeRecipient(
+                    $recipientId: ID!,
+                    $email: String,
                     $expiryDate: AWSDateTime,
                     $firstName: String,
                     $lastName: String
-                ) {
+                    ) {
                     updateRecipient(
-                        input: { 
-                            recipientId: $recipientId, 
-                            email: $email, 
-                            emailPreviousIfReplaced: false, 
-                            expiryDate: $expiryDate, 
-                            firstName: $firstName, 
-                            lastName: $lastName
+                        input: {
+                    recipientId: $recipientId, 
+                                        email: $email, 
+                                        emailPreviousIfReplaced: false, 
+                                        expiryDate: $expiryDate, 
+                                        firstName: $firstName, 
+                                        lastName: $lastName
+                                    }
+                            )
                         }
-                )
-            } """, newRecipient, token)
+                ", newRecipient, token);
+
+                // Let's check that it worked!
+                QLMutation mut = JsonSerializer.Deserialize<QLMutation>(data);
+
+                // Check for device locked witness etc.
+                if(mut.errors != null) Console.WriteLine("Error ::" + mut.errors[0].message);
+                else Console.WriteLine("Recipient updated.");
+            }
         }
     }
-
 }

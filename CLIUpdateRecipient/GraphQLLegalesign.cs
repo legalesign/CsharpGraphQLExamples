@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Amazon.CognitoIdentity;
@@ -11,7 +12,7 @@ namespace CLILegalesignExamples
 {
     class GraphQLLegalesign
     {
-        static async Task QueryAsync(var graphQLQuery, var graphQLVariables, token)
+        public static async Task<string?> QueryAsync(dynamic graphQLQuery, dynamic graphQLVariables, string token)
         {
             var httpClient = new HttpClient
             {
@@ -23,36 +24,26 @@ namespace CLILegalesignExamples
 
             var queryObject = new
             {
-                query = graphQLQuery
-            },
+                query = graphQLQuery,
                 variables = graphQLVariables
             };
 
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Post,
-            Content = new StringContent(JsonSerializer.Serialize(queryObject), Encoding.UTF8, "application/json")
-        };
-
-        dynamic responseObj;
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                Content = new StringContent(JsonSerializer.Serialize(queryObject), Encoding.UTF8, "application/json")
+            };
 
             using (var response = await httpClient.SendAsync(request))
             {
                 response.EnsureSuccessStatusCode();
 
                 var responseString = await response.Content.ReadAsStringAsync();
-                if (responseString != null)
-                {
-                    responseObj = JsonSerializer.Deserialize<dynamic>(responseString);
-                    return responseObj;
-                }
+                return responseString;
+
             }
 
-            return new { error: "Unable to retrieve data." }
-
         }
-
-
 
         public static async Task<string> GetCredsAsync(string username, string password)
         {
@@ -76,4 +67,5 @@ namespace CLILegalesignExamples
 
         }
 
+    }
 }

@@ -9,7 +9,7 @@ using Amazon.Runtime;
 using System.Threading.Tasks;
 
 /***
-* This is a simple demonstration for more about the Legalesign API contact support@legalesign.com
+* This is a simple demonstration, for more about the Legalesign API contact support@legalesign.com
 * dotnet add package Amazon.Extensions.CognitoAuthentication --version 2.5.6
 *
 * Check out the walk through of this code at https://apidocs.legalesign.com 
@@ -19,7 +19,7 @@ namespace CLILegalesignExamples
 {
     // These classes are intentionally empty for the purpose of this example. They are simply marker classes for the purpose of demonstration, contain no properties, and serve no other purpose.
 
-    class CLILegalQLExample
+    class CLIMyInfoExample
     {
         static async Task Main(string[] args)
         {
@@ -30,7 +30,7 @@ namespace CLILegalesignExamples
             };
 
             // First we need a valid security token
-            string okes = await CLILegalQLExample.GetCredsAsync(args[0], args[1]);
+            string okes = await CLIMyInfoExample.GetCredsAsync(args[0], args[1]);
 
             httpClient.DefaultRequestHeaders.Add("User-Agent", "LegalesignCLI");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", okes);

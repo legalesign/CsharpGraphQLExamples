@@ -7,13 +7,12 @@
         {
             "name": "My debug config",
             "type": "coreclr",
+            "logging": {
+                "moduleLoad": false
+            },
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/net9.0/CLIUpdateRecipient.dll",
-            "args": ["alex.weinle@legalesign.com", 
-            "@Testdemo123", "ZG9jMWVmMjdkYWYtMGJlMS0xMWYwLWJiYjUtMDZlNDc2YTA3NTY5", "alex.weinle+1@legalesign.com",
-            "bert@customer.xyz", 
-            "Bert",
-            "Updatesmith"]
+            "args": ["alex.weinle@legalesign.com",  "@Testdemo123", "ZG9jMWVmMjdkYWYtMGJlMS0xMWYwLWJiYjUtMDZlNDc2YTA3NTY5", "bert@customer.xyz",  "bert@customer.xyz",  "Bert", "Updatesmith2"]
         }
     ]
 }
