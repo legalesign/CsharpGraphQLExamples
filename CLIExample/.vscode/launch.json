@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/net9.0/CLIMyInfo.dll",
-            "args": ["alex.weinle@legalesign.com", "@Testdemo123", "notused"]
+            "args": ["apiuser@legalesign.com", "apidevpassword", "notused"]
         }
     ]
 }

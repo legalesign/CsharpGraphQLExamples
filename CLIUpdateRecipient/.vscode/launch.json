@@ -12,7 +12,7 @@
             },
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/net9.0/CLIUpdateRecipient.dll",
-            "args": ["alex.weinle@legalesign.com",  "@Testdemo123", "ZG9jMWVmMjdkYWYtMGJlMS0xMWYwLWJiYjUtMDZlNDc2YTA3NTY5", "bert@customer.xyz",  "bert@customer.xyz",  "Bert", "Updatesmith2"]
+            "args": ["apiuser@legalesign.com",  "apidevelopmentpassword", "ZG9jMWVmMjdkYWYtMGJlDS0xMWYwLWJiYjUtMDZlNDc2YTA3NTY5", "alfie@customer.xyz",  "bert@customer.xyz",  "Bert", "Updatesmith2"]
         }
     ]
 }
